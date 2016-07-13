@@ -16,19 +16,16 @@ defmodule HexWeb.Store.Local do
     end)
   end
 
-  def get(region, bucket, key, opts) do
-    [result] = get(region, bucket, [key], opts)
-    result
+  def get(region, bucket, key, _opts) do
+    path = Path.join([dir(), region(region), bucket(bucket), key])
+    case File.read(path) do
+      {:ok, contents} -> contents
+      {:error, :enoent} -> nil
+    end
   end
 
-  def get_many(region, bucket, keys, _opts) do
-    Enum.map(keys, fn key ->
-      path = Path.join([dir(), region(region), bucket(bucket), key])
-      case File.read(path) do
-        {:ok, contents} -> contents
-        {:error, :enoent} -> nil
-      end
-    end)
+  def get_many(region, bucket, keys, opts) do
+    Enum.map(keys, &get(region, bucket, &1, opts))
   end
 
   def get_each(region, bucket, keys, fun, opts) do
