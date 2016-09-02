@@ -6,7 +6,7 @@ config :hex_web,
   secret:   System.get_env("HEX_SECRET")   || "796f75666f756e64746865686578"
 
 config :hex_web, HexWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 4000, ip: {0, 0, 0, 0}],
   debug_errors: true,
   code_reloader: true,
   cache_static_lookup: false,
@@ -32,5 +32,5 @@ config :hex_web, HexWeb.Repo,
   username: "postgres",
   password: "postgres",
   database: "hexweb_dev",
-  hostname: "localhost",
+  hostname: "postgres",
   pool_size: 5
