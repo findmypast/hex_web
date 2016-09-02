@@ -18,7 +18,7 @@ config :comeonin,
 config :rollbax,
   access_token: System.get_env("ROLLBAR_ACCESS_TOKEN"),
   environment: to_string(Mix.env),
-  enabled: true
+  enabled: false
 
 config :logger,
   backends: [Rollbax.Logger, :console]
