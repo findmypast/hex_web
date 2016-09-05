@@ -6,9 +6,11 @@ services:
       - "4000:4000"
     depends_on:
       - postgres
+
     environment:
       - DATABASE_URL=ecto://postgres:postgres@postgres/hexweb_dev
-    command: sh -c "mix ecto.migrate HexWeb.Repo && mix phoenix.server"
+    # command: sh -c "mix ecto.migrate HexWeb.Repo && mix phoenix.server"
+
   postgres:
     image: postgres
     environment:

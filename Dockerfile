@@ -1,37 +1,21 @@
-FROM elixir:1.2.5
+FROM elixir
 
-ENV TINI_VERSION v0.9.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc /tini.asc
-RUN gpg --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 0527A9B7 \
- && gpg --verify /tini.asc
-RUN chmod +x /tini
-RUN apt-get update && \
-  apt-get -y install curl && \
-  curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
-  apt-get install -y nodejs && \
-  npm install -g brunch
+RUN mix local.hex --force
 
-COPY ./mix.exs /usr/src/app/mix.exs
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
+RUN apt-get install -y nodejs
+
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-# Install elixir dependencies
-RUN mix local.hex --force && \
-    mix local.rebar --force && \
-    mix do deps.get, deps.compile
+COPY mix.exs /usr/src/app/mix.exs
+COPY mix.lock /usr/src/app/mix.lock
+RUN mix deps.get
 
-# Set environment variables
-# ENV MIX_ENV=prod
-ENV PORT=4000
+COPY package.json /usr/src/app/package.json
+RUN npm install
 
 COPY . /usr/src/app
-
-# Compile phoenix app
 RUN mix compile
-RUN brunch build
-RUN mix phoenix.digest
-
-# Set tini entrypoint
-ENTRYPOINT ["/tini", "--"]
 
 CMD ["mix", "phoenix.server"]
