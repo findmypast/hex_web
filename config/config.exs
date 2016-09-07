@@ -56,7 +56,7 @@ config :porcelain,
   driver: Porcelain.Driver.Basic
 
 config :hex_web, HexWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: System.get_env("DATABASE_HOST") || "localhost"],
   root: Path.dirname(__DIR__),
   secret_key_base: "Cc2cUvbm9x/uPD01xnKmpmU93mgZuht5cTejKf/Z2x0MmfqE1ZgHJ1/hSZwd8u4L",
   render_errors: [accepts: ~w(html json elixir erlang)],
@@ -78,7 +78,7 @@ config :phoenix, :format_encoders,
   erlang: HexWeb.ErlangFormat,
   json: HexWeb.Jiffy
 
-config :plug, :mimes, %{
+config :mime, :types, %{
   "application/vnd.hex+json"   => ["json"],
   "application/vnd.hex+elixir" => ["elixir"],
   "application/vnd.hex+erlang" => ["erlang"]
